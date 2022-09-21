@@ -33,6 +33,12 @@ def calculate_X_after(ticker):
         print("here")
         return 0
 
+def get_ticker_stats(ticker, start, end):
+    ticker_adj_close = pdr.get_data_yahoo(ticker, start=start, end=end)["Adj Close"]
+    ticker_return_ts = ticker_adj_close.pct_change().dropna()
+    return pf.show_perf_stats(ticker_return_ts).Backtest.to_dict()
+
+# print(get_ticker_stats("AAPL", "2020-01-01", "2022-06-30"))
 
 # files = ["dataset\ChiNext Shares Only.CSV","dataset\Sci-Tech Innovation Board.CSV","dataset\SSE Mainboard Shares.CSV", "dataset\SZSE Mainboard Shares.CSV"]
 files = ["dataset\ChiNext Shares Only.CSV","dataset\SZSE Mainboard Shares.CSV"]
