@@ -41,7 +41,8 @@ def get_ticker_stats(ticker, start, end):
 # print(get_ticker_stats("AAPL", "2020-01-01", "2022-06-30"))
 
 # files = ["dataset\ChiNext Shares Only.CSV","dataset\Sci-Tech Innovation Board.CSV","dataset\SSE Mainboard Shares.CSV", "dataset\SZSE Mainboard Shares.CSV"]
-files = ["dataset\ChiNext Shares Only.CSV","dataset\SZSE Mainboard Shares.CSV"]
+# files = ["dataset\ChiNext Shares Only.CSV","dataset\SZSE Mainboard Shares.CSV"]
+files = ["dataset\Sci-Tech Innovation Board.CSV","dataset\SSE Mainboard Shares.CSV"]
 
 for file in files:
     print(file)
@@ -53,7 +54,9 @@ for file in files:
     afterCovid  = {}
     for i in tickers:
         print(i)
-        number_x = calculate_X(i)
+        print(i.split(".")[0]+".SS")
+        number_x = calculate_X(i.split(".")[0]+".SS")
+        # number_x = calculate_X(i)
 
         if number_x >= 10:
             beforeCovid[i] = number_x
