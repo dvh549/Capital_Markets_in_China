@@ -43,8 +43,10 @@ def get_ticker_stats(ticker, start, end):
     return perf_dict
 
 def get_ticker_ratios(ticker):
-    curr_ticker = yf.Ticker(ticker)
-    return curr_ticker.stats()
+    curr_ticker = yf.Ticker(ticker).stats()
+    financial_ratios = curr_ticker["financialData"]
+    financial_ratios["Symbols"] = symbol
+    return financial_ratios
 
 # print(calculate_X_after("600201.SS"))
 # print(get_ticker_stats("AAPL", "2020-01-01", "2022-06-30"))
