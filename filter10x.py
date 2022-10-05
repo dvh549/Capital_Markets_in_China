@@ -42,6 +42,10 @@ def get_ticker_stats(ticker, start, end):
     perf_dict["Symbols"] = ticker
     return perf_dict
 
+def get_ticker_ratios(ticker):
+    curr_ticker = yf.Ticker(ticker)
+    return curr_ticker.stats()
+
 # print(calculate_X_after("600201.SS"))
 # print(get_ticker_stats("AAPL", "2020-01-01", "2022-06-30"))
 
@@ -105,7 +109,7 @@ def get_ticker_stats(ticker, start, end):
 # print(df)
     # file_name = file.split("\\")[1]
 
-path = "ticker_first_screening"
+path = "ticker_first_screening_ratios"
 filtered_csv_files = glob.glob(f"{path}/*.csv")
 
 # for filtered_csv in filtered_csv_files:
@@ -119,12 +123,21 @@ filtered_csv_files = glob.glob(f"{path}/*.csv")
 #     final_df = pd.concat([df.loc[:, ["Symbols", "BeforeCovid"]], before_df, df["DuringCovid"], during_df], join="inner", axis=1).iloc[:, :-1]
 #     final_df.to_csv(f"finalised_csv_files/{file_name}")
 
+# for filtered_csv in filtered_csv_files:
+#     df, file_name = pd.read_csv(filtered_csv), filtered_csv.split("\\")[1]
+#     symbols = df["Symbols"]
+#     stats = []
+#     for symbol in symbols:
+#         stats.append(get_ticker_stats(symbol, start="2012-01-01", end="2022-06-30"))
+#     stats_df = pd.DataFrame(stats)
+#     final_df = pd.concat([df, stats_df], join="inner", axis=1).iloc[:, :-1]
+#     final_df.to_csv(f"finalised_csv_files/first_screening_{file_name}")
+
 for filtered_csv in filtered_csv_files:
     df, file_name = pd.read_csv(filtered_csv), filtered_csv.split("\\")[1]
     symbols = df["Symbols"]
-    stats = []
+    ratios = []
     for symbol in symbols:
-        stats.append(get_ticker_stats(symbol, start="2012-01-01", end="2022-06-30"))
-    stats_df = pd.DataFrame(stats)
-    final_df = pd.concat([df, stats_df], join="inner", axis=1).iloc[:, :-1]
-    final_df.to_csv(f"finalised_csv_files/first_screening_{file_name}")
+        ratios.append(get_ticker_ratios(symbol))
+    ratios_df = pd.DataFrame.from_dict(ratios)
+    ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}")
