@@ -1,4 +1,5 @@
 # General / Common libs
+from concurrent.futures import process
 import pandas as pd
 from pandas_datareader import data as pdr
 import yfinance as yf
@@ -6,6 +7,7 @@ yf.pdr_override()
 import pyfolio as pf
 import csv 
 import glob
+from joblib import Parallel, delayed
 
 def calculate_X(ticker):
     try:
@@ -45,7 +47,7 @@ def get_ticker_stats(ticker, start, end):
 def get_ticker_ratios(ticker):
     curr_ticker = yf.Ticker(ticker).stats()
     financial_ratios = curr_ticker["financialData"]
-    financial_ratios["Symbols"] = symbol
+    financial_ratios["Symbols"] = ticker
     return financial_ratios
 
 # print(calculate_X_after("600201.SS"))
@@ -111,7 +113,7 @@ def get_ticker_ratios(ticker):
 # print(df)
     # file_name = file.split("\\")[1]
 
-path = "ticker_first_screening_ratios"
+path = "dataset"
 filtered_csv_files = glob.glob(f"{path}/*.csv")
 
 # for filtered_csv in filtered_csv_files:
@@ -135,11 +137,42 @@ filtered_csv_files = glob.glob(f"{path}/*.csv")
 #     final_df = pd.concat([df, stats_df], join="inner", axis=1).iloc[:, :-1]
 #     final_df.to_csv(f"finalised_csv_files/first_screening_{file_name}")
 
+# for filtered_csv in filtered_csv_files:
+#     df, file_name = pd.read_csv(filtered_csv), filtered_csv.split("\\")[1]
+#     symbols = df["Symbols"]
+#     ratios = []
+#     for symbol in symbols:
+#         ratios.append(get_ticker_ratios(symbol))
+#     ratios_df = pd.DataFrame.from_dict(ratios)
+#     ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}")
+
+def process_ticker(ticker):
+    try:
+        industry = yf.Ticker(ticker).stats()["summaryProfile"]["industry"]
+        print(ticker)
+        return industry
+    except:
+        print("Cannot find.")
+        return
+
+def process_to_dict(industry_list):
+    industries = {}
+    for industry in industry_list:
+        if industry not in industries:
+            industries[industry] = 1
+        else:
+            industries[industry] += 1
+    return list(industries.items())
+                
+# def process_csv(filtered_csv):
 for filtered_csv in filtered_csv_files:
-    df, file_name = pd.read_csv(filtered_csv), filtered_csv.split("\\")[1]
-    symbols = df["Symbols"]
-    ratios = []
-    for symbol in symbols:
-        ratios.append(get_ticker_ratios(symbol))
-    ratios_df = pd.DataFrame.from_dict(ratios)
-    ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}")
+    req_cols = ["Symbol", "Date"]
+    df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
+    df = df[df["Date"] >= "2012-01-01"]
+    symbols, industry_list = df['Symbol'].unique(), []
+    industry_list = Parallel(n_jobs=4, verbose=32)(delayed(process_ticker)(symbol) for symbol in symbols)
+    industries = process_to_dict(industry_list)
+    industries_df = pd.DataFrame(industries, columns=["Industry", "Total Count"])
+    industries_df.to_csv(f"finalised_csv_files/industries_{file_name}", index=False)
+
+# Parallel(n_jobs=1, verbose=32)(delayed(process_csv)(filtered_csv) for filtered_csv in filtered_csv_files)
