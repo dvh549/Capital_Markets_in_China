@@ -112,7 +112,7 @@ def get_ticker_ratios(ticker):
 # print(df)
     # file_name = file.split("\\")[1]
 
-path = "dataset"
+path = "ticker_first_screening"
 filtered_csv_files = glob.glob(f"{path}/*.csv")
 
 # for filtered_csv in filtered_csv_files:
@@ -149,7 +149,8 @@ def process_ticker(ticker):
     try:
         industry = yf.Ticker(ticker).stats()["summaryProfile"]["industry"]
         print(ticker)
-        return industry
+        # return industry
+        return ticker, industry
     except:
         print("Cannot find.")
         return
@@ -163,15 +164,20 @@ def process_to_dict(industry_list):
             industries[industry] += 1
     return list(industries.items())
                 
-# def process_csv(filtered_csv):
-for filtered_csv in filtered_csv_files:
-    req_cols = ["Symbol", "Date"]
+def process_csv(filtered_csv):
+# for filtered_csv in filtered_csv_files:
+    # req_cols = ["Symbol", "Date"]
+    req_cols = ["Symbols"]
+    # df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
     df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
-    df = df[df["Date"] >= "2012-01-01"]
-    symbols, industry_list = df['Symbol'].unique(), []
+    # df = df[df["Date"] >= "2012-01-01"]
+    # symbols, industry_list = df['Symbol'].unique(), []
+    symbols, industry_list = df["Symbols"], []
     industry_list = Parallel(n_jobs=4, verbose=32)(delayed(process_ticker)(symbol) for symbol in symbols)
-    industries = process_to_dict(industry_list)
-    industries_df = pd.DataFrame(industries, columns=["Industry", "Total Count"])
-    industries_df.to_csv(f"finalised_csv_files/industries_{file_name}", index=False)
+    # industries = process_to_dict(industry_list)
+    # industries_df = pd.DataFrame(industries, columns=["Industry", "Total Count"])
+    industries_df = pd.DataFrame(industry_list, columns=["Symbol", "Industry"])
+    # industries_df.to_csv(f"finalised_csv_files/industries_{file_name}", index=False)
+    industries_df.to_csv(f"ticker_first_screening_ratios/industries_{file_name}", index=False)
 
-# Parallel(n_jobs=1, verbose=32)(delayed(process_csv)(filtered_csv) for filtered_csv in filtered_csv_files)
+Parallel(n_jobs=3, verbose=32)(delayed(process_csv)(filtered_csv) for filtered_csv in filtered_csv_files)
