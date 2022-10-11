@@ -7,6 +7,7 @@ import pyfolio as pf
 import csv 
 import glob
 from joblib import Parallel, delayed
+from yahoo_fin import stock_info as si
 
 def calculate_X(ticker):
     try:
@@ -54,6 +55,25 @@ def get_ticker_ratios(ticker):
 
 # files = ["dataset\ChiNext Shares Only.CSV", "dataset\SZSE Mainboard Shares.CSV"]
 # files = ["dataset\Sci-Tech Innovation Board.CSV","dataset\SSE Mainboard Shares.CSV"]
+# DOW.csv has no 10x stocks, NASDAQ & SP500 do.
+files = ["original_dataset/SP500.csv"]
+
+def check_10x_and_industry(symbol):
+    multiplier = calculate_X(symbol)
+    print(multiplier)
+    if multiplier >= 10:
+        try:
+            industry = yf.Ticker(symbol).stats()["summaryProfile"]["industry"]
+            return symbol, multiplier, industry
+        except:
+            return symbol, multiplier, ""
+
+for file in files:
+    df, file_name  = pd.read_csv(file), file.split("/")[1]
+    data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)(symbol) for symbol in df["Symbols"])
+    data = [data_point for data_point in data if data_point is not None]
+    shortlisted_df = pd.DataFrame(data, columns=["Symbol", "Multiplier", "Industry"])
+    shortlisted_df.to_csv(f"ticker_first_screening/{file_name}", index=False)
 
 # for file in files:
 #     print(file)
@@ -164,20 +184,30 @@ def process_to_dict(industry_list):
             industries[industry] += 1
     return list(industries.items())
                 
-def process_csv(filtered_csv):
-# for filtered_csv in filtered_csv_files:
-    # req_cols = ["Symbol", "Date"]
-    req_cols = ["Symbols"]
-    # df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
-    df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
-    # df = df[df["Date"] >= "2012-01-01"]
-    # symbols, industry_list = df['Symbol'].unique(), []
-    symbols, industry_list = df["Symbols"], []
-    industry_list = Parallel(n_jobs=4, verbose=32)(delayed(process_ticker)(symbol) for symbol in symbols)
-    # industries = process_to_dict(industry_list)
-    # industries_df = pd.DataFrame(industries, columns=["Industry", "Total Count"])
-    industries_df = pd.DataFrame(industry_list, columns=["Symbol", "Industry"])
-    # industries_df.to_csv(f"finalised_csv_files/industries_{file_name}", index=False)
-    industries_df.to_csv(f"ticker_first_screening_ratios/industries_{file_name}", index=False)
+# def process_csv(filtered_csv):
+# # for filtered_csv in filtered_csv_files:
+#     # req_cols = ["Symbol", "Date"]
+#     req_cols = ["Symbols"]
+#     # df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
+#     df, file_name = pd.read_csv(filtered_csv, encoding='cp1252', on_bad_lines='skip', usecols=req_cols), filtered_csv.split("\\")[1]
+#     # df = df[df["Date"] >= "2012-01-01"]
+#     # symbols, industry_list = df['Symbol'].unique(), []
+#     symbols, industry_list = df["Symbols"], []
+#     industry_list = Parallel(n_jobs=4, verbose=32)(delayed(process_ticker)(symbol) for symbol in symbols)
+#     # industries = process_to_dict(industry_list)
+#     # industries_df = pd.DataFrame(industries, columns=["Industry", "Total Count"])
+#     industries_df = pd.DataFrame(industry_list, columns=["Symbol", "Industry"])
+#     # industries_df.to_csv(f"finalised_csv_files/industries_{file_name}", index=False)
+#     industries_df.to_csv(f"ticker_first_screening_ratios/industries_{file_name}", index=False)
 
-Parallel(n_jobs=3, verbose=32)(delayed(process_csv)(filtered_csv) for filtered_csv in filtered_csv_files)
+# Parallel(n_jobs=3, verbose=32)(delayed(process_csv)(filtered_csv) for filtered_csv in filtered_csv_files)
+
+# def get_and_save_US_Companies():
+#     us_stock_list = [pd.DataFrame(si.tickers_sp500()), pd.DataFrame(si.tickers_nasdaq()), pd.DataFrame(si.tickers_dow())]
+#     us_stock_names = ["SP500.csv", "NASDAQ.csv", "DOW.csv"]
+#     for i in range(len(us_stock_list)):
+#         df, file_name = us_stock_list[i], us_stock_names[i]
+#         df.to_csv(f"original_dataset/{file_name}", index=False)
+#     return "Done."
+
+# get_and_save_US_Companies()
