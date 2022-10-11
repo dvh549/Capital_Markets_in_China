@@ -68,12 +68,12 @@ def check_10x_and_industry(symbol):
         except:
             return symbol, multiplier, ""
 
-for file in files:
-    df, file_name  = pd.read_csv(file), file.split("/")[1]
-    data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)(symbol) for symbol in df["Symbols"])
-    data = [data_point for data_point in data if data_point is not None]
-    shortlisted_df = pd.DataFrame(data, columns=["Symbol", "Multiplier", "Industry"])
-    shortlisted_df.to_csv(f"ticker_first_screening/{file_name}", index=False)
+# for file in files:
+#     df, file_name  = pd.read_csv(file), file.split("/")[1]
+#     data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)(symbol) for symbol in df["Symbols"])
+#     data = [data_point for data_point in data if data_point is not None]
+#     shortlisted_df = pd.DataFrame(data, columns=["Symbol", "Multiplier", "Industry"])
+#     shortlisted_df.to_csv(f"ticker_first_screening/{file_name}", index=False)
 
 # for file in files:
 #     print(file)
@@ -156,14 +156,13 @@ filtered_csv_files = glob.glob(f"{path}/*.csv")
 #     final_df = pd.concat([df, stats_df], join="inner", axis=1).iloc[:, :-1]
 #     final_df.to_csv(f"finalised_csv_files/first_screening_{file_name}")
 
-# for filtered_csv in filtered_csv_files:
-#     df, file_name = pd.read_csv(filtered_csv), filtered_csv.split("\\")[1]
-#     symbols = df["Symbols"]
-#     ratios = []
-#     for symbol in symbols:
-#         ratios.append(get_ticker_ratios(symbol))
-#     ratios_df = pd.DataFrame.from_dict(ratios)
-#     ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}")
+files = ["ticker_first_screening/NASDAQ.csv", "ticker_first_screening/SP500.csv"]
+
+for file in files:
+    df, file_name = pd.read_csv(file), file.split("/")[1]
+    ratios = Parallel(n_jobs=4, verbose=32)(delayed(get_ticker_ratios)(symbol) for symbol in df["Symbol"])
+    ratios_df = pd.DataFrame.from_dict(ratios)
+    ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}", index=False)
 
 def process_ticker(ticker):
     try:
