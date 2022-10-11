@@ -1,121 +1,34 @@
-Industry,Total Count
-Banks—Regional,27
-Airports & Air Services,3
-Auto Manufacturers,18
-Real Estate Services,20
-Conglomerates,13
-Steel,31
-Utilities—Independent Power Producers,10
-Infrastructure Operations,13
-Marine Shipping,23
-Utilities—Renewable,20
-Utilities—Regulated Electric,15
-Oil & Gas Integrated,3
-Airlines,6
-Capital Markets,32
-Farm & Heavy Construction Machinery,15
-Broadcasting,6
-Aerospace & Defense,13
-Engineering & Construction,57
-Real Estate—Development,41
-Telecom Services,8
-Industrial Distribution,10
-Asset Management,7
-Lodging,7
-Medical Devices,2
-Medical Distribution,4
-Integrated Freight & Logistics,18
-Beverages—Wineries & Distilleries,15
-Consumer Electronics,7
-Drug Manufacturers—Specialty & Generic,54
-Chemicals,61
-Electrical Equipment & Parts,55
-Textile Manufacturing,28
-Leisure,8
-Packaged Foods,30
-Lumber & Wood Production,4
-Real Estate—Diversified,4
-Auto Parts,80
-Electronic Components,35
-Entertainment,9
-Farm Products,21
-Agricultural Inputs,20
-Computer Hardware,6
-Utilities—Diversified,7
-Paper & Paper Products,14
-Communication Equipment,25
-Apparel Manufacturing,17
-Other Industrial Metals & Mining,22
-Thermal Coal,19
-Railroads,14
-Specialty Retail,6
-Beverages—Brewers,6
-Specialty Chemicals,50
-Electronics & Computer Distribution,3
-Specialty Business Services,7
-Biotechnology,16
-Utilities—Regulated Water,9
-Specialty Industrial Machinery,92
-Semiconductor Equipment & Materials,12
-Building Materials,16
-Confectioners,1
-Building Products & Equipment,11
-Packaging & Containers,12
-Waste Management,12
-Aluminum,11
-Publishing,18
-Advertising Agencies,9
-Household & Personal Products,9
-Copper,5
-Software—Application,19
-Drug Manufacturers—General,9
-Department Stores,34
-Auto & Truck Dealerships,4
-Utilities—Regulated Gas,10
-"Furnishings, Fixtures & Appliances",34
-Oil & Gas Equipment & Services,8
-Grocery Stores,5
-Tools & Accessories,5
-Oil & Gas Refining & Marketing,4
-Pollution & Treatment Controls,8
-Financial Conglomerates,2
-Coking Coal,6
-Personal Services,2
-Other Precious Metals & Mining,1
-Gold,5
-Solar,5
-Semiconductors,10
-Software—Infrastructure,4
-Trucking,7
-Luxury Goods,4
-Oil & Gas Midstream,5
-Internet Content & Information,4
-Security & Protection Services,1
-Education & Training Services,3
-Travel Services,3
-Restaurants,2
-Information Technology Services,10
-Residential Construction,1
-Oil & Gas E&P,3
-Medical Care Facilities,1
-Scientific & Technical Instruments,4
-Health Information Services,2
-Business Equipment & Supplies,5
-Pharmaceutical Retailers,5
-Oil & Gas Drilling,1
-Credit Services,1
-Metal Fabrication,14
-Banks—Diversified,6
-Insurance—Life,4
-Insurance—Property & Casualty,1
-Financial Data & Stock Exchanges,1
-Footwear & Accessories,6
-Consulting Services,1
-Medical Instruments & Supplies,7
-Diagnostics & Research,6
-Recreational Vehicles,3
-Beverages—Non-Alcoholic,3
-Electronic Gaming & Multimedia,2
-Rental & Leasing Services,1
-Apparel Retail,1
-Internet Retail,1
+Symbol,Industry
+600346.SS,Textile Manufacturing
+600389.SS,Agricultural Inputs
+600399.SS,Steel
+600436.SS,Drug Manufacturers—General
+600438.SS,Farm Products
+600460.SS,Semiconductor Equipment & Materials
+600486.SS,Agricultural Inputs
+600563.SS,Electronic Components
+600702.SS,Beverages—Wineries & Distilleries
+600732.SS,Solar
+600745.SS,Communication Equipment
+600763.SS,Medical Care Facilities
+600809.SS,Beverages—Wineries & Distilleries
+600845.SS,Software—Application
+601012.SS,Semiconductor Equipment & Materials
+601100.SS,Specialty Industrial Machinery
+601799.SS,Auto Parts
+601888.SS,Specialty Retail
+603019.SS,Computer Hardware
+603032.SS,Railroads
+603127.SS,Diagnostics & Research
+603290.SS,Semiconductor Equipment & Materials
+603345.SS,Packaged Foods
+603392.SS,Biotechnology
+603501.SS,Semiconductors
+603605.SS,Household & Personal Products
+603606.SS,Electrical Equipment & Parts
+603613.SS,Information Technology Services
+603690.SS,Specialty Industrial Machinery
+603737.SS,Specialty Chemicals
+603799.SS,Other Industrial Metals & Mining
+603986.SS,Semiconductors
+605358.SS,Semiconductors
