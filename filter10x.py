@@ -12,7 +12,7 @@ from yahoo_fin import stock_info as si
 def calculate_X(ticker):
     try:
         ticker_data = pdr.get_data_yahoo(ticker, start="2012-01-01", end="2022-06-30")
-        ticker_close =ticker_data["Close"]
+        ticker_close = ticker_data["Close"]
         # if pd.to_datetime(ticker_close.keys()[0])==pd.to_datetime("2009-01-02"):
         if ticker_close.head(1).values[0]> ticker_close.tail(1).values[0]:
             return -1*round((ticker_close.tail(1).values / ticker_close.head(1).values)[0], 3)
@@ -56,7 +56,8 @@ def get_ticker_ratios(ticker):
 # files = ["dataset\ChiNext Shares Only.CSV", "dataset\SZSE Mainboard Shares.CSV"]
 # files = ["dataset\Sci-Tech Innovation Board.CSV","dataset\SSE Mainboard Shares.CSV"]
 # DOW.csv has no 10x stocks, NASDAQ & SP500 do.
-files = ["original_dataset/SP500.csv"]
+# files = ["original_datasets/SP500.csv"]
+files = ["original_datasets/SGX.csv"]
 
 def check_10x_and_industry(symbol):
     multiplier = calculate_X(symbol)
@@ -68,12 +69,13 @@ def check_10x_and_industry(symbol):
         except:
             return symbol, multiplier, ""
 
-# for file in files:
-#     df, file_name  = pd.read_csv(file), file.split("/")[1]
-#     data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)(symbol) for symbol in df["Symbols"])
-#     data = [data_point for data_point in data if data_point is not None]
-#     shortlisted_df = pd.DataFrame(data, columns=["Symbol", "Multiplier", "Industry"])
-#     shortlisted_df.to_csv(f"ticker_first_screening/{file_name}", index=False)
+for file in files:
+    df, file_name  = pd.read_csv(file), file.split("/")[1]
+    # data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)() for symbol in df["Symbols"])
+    data = Parallel(n_jobs=4, verbose=32)(delayed(check_10x_and_industry)(f"{symbol}.SI") for symbol in df["Symbol"])
+    data = [data_point for data_point in data if data_point is not None]
+    shortlisted_df = pd.DataFrame(data, columns=["Symbol", "Multiplier", "Industry"])
+    shortlisted_df.to_csv(f"ticker_first_screening/{file_name}", index=False)
 
 # for file in files:
 #     print(file)
@@ -156,13 +158,13 @@ filtered_csv_files = glob.glob(f"{path}/*.csv")
 #     final_df = pd.concat([df, stats_df], join="inner", axis=1).iloc[:, :-1]
 #     final_df.to_csv(f"finalised_csv_files/first_screening_{file_name}")
 
-files = ["ticker_first_screening/NASDAQ.csv", "ticker_first_screening/SP500.csv"]
+# files = ["ticker_first_screening/NASDAQ.csv", "ticker_first_screening/SP500.csv"]
 
-for file in files:
-    df, file_name = pd.read_csv(file), file.split("/")[1]
-    ratios = Parallel(n_jobs=4, verbose=32)(delayed(get_ticker_ratios)(symbol) for symbol in df["Symbol"])
-    ratios_df = pd.DataFrame.from_dict(ratios)
-    ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}", index=False)
+# for file in files:
+#     df, file_name = pd.read_csv(file), file.split("/")[1]
+#     ratios = Parallel(n_jobs=4, verbose=32)(delayed(get_ticker_ratios)(symbol) for symbol in df["Symbol"])
+#     ratios_df = pd.DataFrame.from_dict(ratios)
+#     ratios_df.to_csv(f"finalised_csv_files/ratios_{file_name}", index=False)
 
 def process_ticker(ticker):
     try:
